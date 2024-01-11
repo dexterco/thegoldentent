@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 @tailwindcss forms;
+
+myTextColor{
+ color: #ac476c;
+}
+mybackgroundColor{
+    background-color: #ac476c;
+}
