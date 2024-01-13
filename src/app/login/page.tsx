@@ -1,33 +1,62 @@
-"use client"
-import { useState } from 'react';
+"use client";
+import { useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Image from 'next/image';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { passwordReset, signInWithEmail } from '@/services/User Firebase/handleAuth';
+import { useAppDispatch, useAppSelector } from '@/redux-toolkit/hooks';
+import { addUser } from '@/features/User/userSlice';
+import { useRouter } from 'next/navigation'; 
+import { RootState } from '@/redux-toolkit/store';
 
 export default function Login() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const user = useAppSelector((state: RootState) => state.user)
+  useEffect(()=>{
+      if(user.uid){
+        //route to dashboard
+         router.push('/')
+      }
+  },[])
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
     toast('Logging in. Please wait...');
 
     try {
-      // Simulate asynchronous operation (replace with actual login logic)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Call the signInWithEmail function to handle authentication
+      const { result1, error } = await signInWithEmail(email, password);
 
-      toast.success('Login successful!', {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      // Redirect or perform other actions after successful login
-    } catch (error:any) {
-      toast.error(`Login failed because ${error.message}`, {
+      if (error) {
+        // If there is an error, display an error toast
+        toast.error(`Login failed because ${error.code}`, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        // If login is successful, display a success toast
+        toast.success('Login successful!', {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+        // Redirect or perform other actions after successful login
+        // For example, you can navigate to a different page or update the UI
+        dispatch(addUser(result1));
+        router.push('/');
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error(error);
+      toast.error('Unexpected error during login', {
         position: toast.POSITION.TOP_CENTER,
       });
     } finally {
+      // Reset form fields
       setEmail('');
       setPassword('');
     }
@@ -38,46 +67,65 @@ export default function Login() {
     toast('Resetting password. Please wait...');
 
     try {
-      // Simulate asynchronous operation (replace with actual password reset logic)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Call the passwordReset function to initiate the password reset process
+      const { error } = await passwordReset(email);
 
-      toast.success('Password reset successful! Check your email for instructions.', {
+      if (!error) {
+        // If there is an error, display an error toast
+        toast.success('Password reset email sent successfully!', {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error(error);
+      toast.error('Unexpected error during password reset', {
         position: toast.POSITION.TOP_CENTER,
       });
-      setForgotPassword(false);
-    } catch (error:any) {
-      toast.error(`Password reset failed because ${error.message}`, {
-        position: toast.POSITION.TOP_CENTER,
-      });
+    } finally {
+      // Reset form fields or perform other necessary actions
+      setEmail('');
     }
   };
 
   return (
     <>
       <ToastContainer />
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <Image
-            className="mx-auto"
-            src="/assets/logo.png"
-            alt="Logo"
-            height={200}
-            width={200}
-            priority
-          />
-          <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            {forgotPassword ? 'Reset Password' : 'Sign into your account'}
-          </h2>
-        </div>
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="flex min-h-full items-center justify-center px-6 py-12 lg:px-8">
+        {/* Left side with the image */}
+        <div className="hidden lg:block lg:w-1/2">
           {forgotPassword ? (
-            <form className="space-y-6" onSubmit={handleForgotPassword}>
+            <Image
+              src="/assets/forgotpassword.svg"
+              alt="Forgot Password"
+              width={600}
+              height={600}
+            />
+          ) : (
+            <Image
+              src="/assets/loginpage.svg"
+              alt="Login Page"
+              width={600}
+              height={600}
+            />
+          )}
+        </div>
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
+       
+          <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            {forgotPassword ? 'Reset Password' : 'Welcome to The Golden Tent! 👋'}
+          </h2>
+          {forgotPassword ? (
+            <><p>Password reset email sent to you to reset yoour password</p>
+            <form className="mt-10 space-y-6" onSubmit={handleForgotPassword}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                   Email address
                 </label>
                 <div className="mt-2">
                   <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter Email"
                     id="email"
                     name="email"
@@ -103,14 +151,19 @@ export default function Login() {
                 </button>
               </div>
             </form>
+            </>
           ) : (
-            <form className="space-y-6" onSubmit={handleLogin}>
+            <>
+            <p>Please sign-in to your account and start the adventure</p>
+            <form className="mt-10 space-y-6" onSubmit={handleLogin}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                   Email address
                 </label>
                 <div className="mt-2">
                   <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter Email"
                     id="email"
                     name="email"
@@ -128,7 +181,9 @@ export default function Login() {
 
                 <div className="flex items-center justify-between">
                   <input
-                  minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    minLength={6}
                     placeholder="Enter Password"
                     id="password"
                     name="password"
@@ -166,6 +221,7 @@ export default function Login() {
                 </button>
               </div>
             </form>
+            </>
           )}
           <p className="mt-10 text-center text-sm text-gray-500">
             {!forgotPassword ? (

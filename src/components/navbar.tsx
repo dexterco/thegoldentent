@@ -2,8 +2,17 @@
 import { useState, useEffect, Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon,UserIcon } from "@heroicons/react/20/solid";
+import { useAppDispatch, useAppSelector } from "@/redux-toolkit/hooks";
+import { RootState } from "@/redux-toolkit/store";
+import { signOut } from "@/services/User Firebase/handleAuth";
+import { getAuth} from "firebase/auth";
+import { clearUser } from "@/features/User/userSlice";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const user = useAppSelector((state: RootState) => state.user);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -24,6 +33,14 @@ export default function Navbar() {
       document.body.removeEventListener("click", handleOutsideClick);
     };
   }, [selectedMenu]);
+   const auth = getAuth()
+ 
+
+  const handleSignOut= ()=>{
+      signOut()
+      dispatch(clearUser())
+      router.push('/')
+  }
 
   const handleClick = (menu:any) => {
     if (selectedMenu === menu) {
@@ -172,7 +189,7 @@ export default function Navbar() {
           </a>
         </div>
         <div>
-        {isLoggedIn ? (
+        {user.uid ? (
   // If user is logged in, show user icon and submenu
   // Omitted code for brevity
   <Menu as="div" className="relative inline-block text-left">
@@ -182,7 +199,7 @@ export default function Navbar() {
         >
                   <UserIcon className="h-6 w-6 text-white mr-2" />
                   
-                  <span className="text-white">Hi, User</span>  
+                  <span className="text-white">Hi, {user.name}</span>  
                   <ChevronDownIcon
                     className="-mr-1 h-5 w-5 text-white hover:text-gray-300"
                     aria-hidden="true"
@@ -215,6 +232,7 @@ export default function Navbar() {
           {({ active }) => (
             <a
               href="#"
+              onClick={handleSignOut}
               className={`${
                 active ? "bg-gray-100 text-gray-900" : "text-gray-700"
               } block px-4 py-2 text-sm`}
@@ -229,8 +247,8 @@ export default function Navbar() {
 ) : (
   // If user is not logged in, show regular menu items
   <a
-    href="#"
-    className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-gray-300 hover:bg-white mt-4 lg:mt-0"
+    href="/login"
+    className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-[#ac476c] hover:bg-white mt-4 lg:mt-0"
   >
     Sign In
   </a>

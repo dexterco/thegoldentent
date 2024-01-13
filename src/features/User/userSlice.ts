@@ -1,41 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Define a type for the slice state
 interface UserState {
-    uid:string|null|undefined
-    name: string|null|undefined
-    email:string|null|undefined
-    phone:number|null|undefined
+  [key: string]: string | number | null | undefined;
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
-  uid:null,
-  name:null,
-  email:null,
-  phone:null
-}
+  uid: null,
+  name: null,
+  email: null,
+  phone: null,
+};
 
 const userSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-      setUser: (state, action: PayloadAction<UserState>) => {
-        const { uid, name, email,phone } = action.payload;
-        state.uid = uid;
-        state.name = name;
-        state.email = email;
-        state.phone = phone;
-      },
-      clearUser: (state) => {
-        state.uid = null;
-        state.name = null;
-        state.email = null;
-        state.phone = null;
-      },
+  name: 'user',
+  initialState,
+  reducers: {
+    addUser: (state, action: PayloadAction<UserState>) => {
+      // Merge the incoming action.payload with the current state
+      Object.assign(state, action.payload);
     },
-  });
-  
-  export const { setUser, clearUser } = userSlice.actions;
-  export const userReducer = userSlice.reducer;
+    clearUser: (state) => {
+      // Clear all properties in the state
+      for (const key in state) {
+        state[key] = null;
+      }
+    },
+  },
+});
+
+export const { addUser, clearUser } = userSlice.actions;
+export const userReducer = userSlice.reducer;
