@@ -8,6 +8,7 @@ import { signOut } from "@/services/User Firebase/handleAuth";
 import { getAuth} from "firebase/auth";
 import { clearUser } from "@/features/User/userSlice";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Navbar() {
   const dispatch = useAppDispatch()
@@ -107,13 +108,20 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center z-[100] justify-between flex-wrap bg-[#ac476c] p-6 top-0 w-full">
-      <div className="flex items-center flex-shrink-0 text-white mr-6">
-        <span className="font-semibold text-xl tracking-tight">
-          <a href="/">
-          The Golden Tent
+    <div className="flex  flex-shrink-0 text-white ">
+      <a href="/">
+          <Image
+            src="/assets/logowhite.png" // Replace with the path to your logo image
+            alt="Logo"
+            width={60}
+            height={60}
+            style={{marginRight:10}}
+          />
           </a>
-        </span>
-      </div>
+          {/* <span className="font-semibold text-xl tracking-tight ml-2">
+            <a href="/">The Golden Tent</a>
+          </span> */}
+        </div>
       <div className="block lg:hidden">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -219,12 +227,12 @@ export default function Navbar() {
                 <Menu.Item>
           {({ active }) => (
             <a
-              href="#"
+              href="/Profile"
               className={`${
                 active ? "bg-gray-100 text-gray-900" : "text-gray-700"
               } block px-4 py-2 text-sm`}
             >
-             Dashboard
+             My Account
             </a>
           )}
         </Menu.Item>

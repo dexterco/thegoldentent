@@ -47,7 +47,7 @@ export default function Login() {
         // Redirect or perform other actions after successful login
         // For example, you can navigate to a different page or update the UI
         dispatch(addUser(result1));
-        router.push('/');
+        router.push('/Profile');
       }
     } catch (error) {
       // Handle unexpected errors
@@ -116,7 +116,7 @@ export default function Login() {
             {forgotPassword ? 'Reset Password' : 'Welcome to The Golden Tent! 👋'}
           </h2>
           {forgotPassword ? (
-            <><p>Password reset email sent to you to reset yoour password</p>
+            <><p className='text-center'>Password reset email sent to you to reset yoour password</p>
             <form className="mt-10 space-y-6" onSubmit={handleForgotPassword}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -154,7 +154,7 @@ export default function Login() {
             </>
           ) : (
             <>
-            <p>Please sign-in to your account and start the adventure</p>
+            <p className='text-center'>Please sign-in to your account and start the adventure</p>
             <form className="mt-10 space-y-6" onSubmit={handleLogin}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">

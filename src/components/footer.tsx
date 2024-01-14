@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { FaFacebook, FaTimes, FaInstagram } from "react-icons/fa";
 
@@ -7,13 +8,27 @@ export default function Footer() {
   return (
     <footer className="bg-[#ac476c] text-white py-12 px-4">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
-        <div className="w-full md:w-1/2 md:pr-8 mb-10 md:mb-0">
-          <h2 className="text-3xl font-bold mb-4">The Golden Tent</h2>
-          <p className="text-sm">
-            Golden Tent is your gateway to exquisite Middle Eastern wedding and conference venues.
-            We curate extraordinary experiences for all wedding venues in the Middle East.
-          </p>
+
+        {/* Logo and Text Block */}
+        <div className="w-full md:w-1/2 md:pr-8 mb-10 md:mb-0 flex flex-col md:flex-row items-center">
+          <a href="/">
+            <Image
+              src="/assets/logowhite.png"
+              alt="Logo"
+              width={120}
+              height={120}
+              style={{ marginBottom: 10 }}
+            />
+          </a>
+          <div className="ml-4 flex-1 md:ml-4 md:mt-0">
+            <p className="text-sm">
+              Golden Tent is your gateway to exquisite Middle Eastern wedding and conference venues.
+              We curate extraordinary experiences for all wedding venues in the Middle East.
+            </p>
+          </div>
         </div>
+
+        {/* Useful Links and Subscribe Block */}
         <div className="w-full md:w-1/2 flex flex-wrap md:flex-no-wrap justify-between">
           <div className="w-full md:w-1/2 mb-8 md:mb-0">
             <h3 className="text-lg font-semibold mb-4">Useful Links</h3>
@@ -65,6 +80,8 @@ export default function Footer() {
             </form>
           </div>
         </div>
+
+        {/* Social Media and Copyright Block */}
         <div className="w-full mt-8 text-sm text-gray-300 flex flex-col md:flex-row justify-center md:justify-between items-center">
           <div className="flex gap-4">
             <a href="#" className="text-white hover:text-gray-300">
