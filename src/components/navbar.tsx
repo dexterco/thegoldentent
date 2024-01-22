@@ -145,7 +145,7 @@ export default function Navbar() {
         }`}
       >
         <div className="text-sm lg:flex-grow">
-        <a href="#"
+        <a href="/suppliers"
             className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-300 mr-4"
           >
            All Vendors
